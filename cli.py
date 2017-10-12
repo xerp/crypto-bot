@@ -30,7 +30,7 @@ if __name__ == '__main__':
         try:
             exchange = loader.get_exchange_by_name(sys.argv[1])
             if not exchange:
-                raise ExchangeNotFoundError('{0} exchange is not available')
+                raise ExchangeNotFoundError(f'{exchange} exchange is not available')
 
             coin = sys.argv[2]
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
                 coin_info = function(coin)
 
                 for k, v in coin_info.iteritems():
-                    print('{0}::{1}'.format(k, v))
+                    print(f'{k}::{v}')
 
         except IndexError:
             print('Missing arguments for this option')

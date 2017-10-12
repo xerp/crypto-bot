@@ -4,12 +4,12 @@ import requests as http
 EXCHANGE_COMMANDS = {}
 
 
-def http_get(url, api_key):
+def http_get(url, api_key=None):
     r = http.get(url)
     return r.json()
 
 
-def http_post(url, data, api_key):
+def http_post(url, data, api_key=None):
     r = http.post(url, data)
     return r.json()
 
@@ -42,7 +42,7 @@ class Exchange(ABC):
 
     @abstractmethod
     @command_name('info')
-    def get_general_coin_info(self, coin):
+    def get_general_coin_info(self, coins):
         pass
 
     @abstractmethod
