@@ -1,13 +1,56 @@
 import unittest
 from exchanges import loader
 
+api_keys = {
+    'key': '',
+    'secret': ''
+}
 
 class PoloniexTestCast(unittest.TestCase):
+    def setUp(self):
+        self.poloniex = loader.get_exchange_by_name('poloniex')
+        self.poloniex.connect_to_api(api_keys)
+
     def test_get_coin_info(self):
-        poloniex = loader.get_exchange_by_name('poloniex')
-        info = poloniex.get_general_coin_info(['btc', 'eth'])
-        print(info)
-        self.assertEqual(True, False)
+        coins = ['btc', 'eth']
+
+        info = self.poloniex.get_general_coin_info(coins)
+
+        self.assertTrue(info, 'coin info failing')
+
+    def test_get_balance(self):
+        coin = None
+        balances = self.poloniex.get_balance(coin)
+
+        self.assertTrue(balances, 'coin balance failing')
+
+    def test_get_open_orders(self):
+        coins = None
+        open_orders = self.poloniex.get_open_orders(coins)
+
+        self.assertTrue(open_orders, 'open orders failing')
+
+    def test_get_order_history(self):
+        coins = ['btc', 'eth']
+        order_history = self.poloniex.get_order_history(coins)
+
+        self.assertTrue(order_history, 'order history failing')
+
+    def test_get_trade_history(self):
+        coins = ['btc', 'eth']
+        start_date = '8/10/2017'
+
+        trade_history = self.poloniex.get_trade_history(coins, start_date)
+
+        self.assertTrue(trade_history, 'trade history failing')
+
+    def test_get_chart_info(self):
+        coins = ['btc', 'eth']
+        start_date = '8/10/2017'
+
+        chart_info = self.poloniex.get_chart_info(coins, start_date)
+
+        self.assertTrue(chart_info, 'chart info failing')
 
 
 if __name__ == '__main__':
