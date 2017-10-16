@@ -14,12 +14,6 @@ def get_exchange_by_name(name):
         pass
 
 
-def get_available_exchanges_by_name():
-    exchanges = get_available_exchanges()
-
-    return list(map(lambda e: e.name, exchanges))
-
-
 def get_available_exchanges():
     exchanges = []
     exchange_package = 'exchanges'

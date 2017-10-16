@@ -5,7 +5,7 @@ from exchange import Exchange, http_get, http_post, ExchangeError, ExchangeMetho
 from hmac import new as hmac_new
 from hashlib import sha512
 import time
-from datetime import date, datetime
+from datetime import datetime
 
 
 def poloniex_http_post(url, data, api_keys):
