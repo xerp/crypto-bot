@@ -47,7 +47,7 @@ def print_exchange_values(**kwargs):
         print(f'{parameter}::{parameter_value}')
 
 
-def print_exchange_option(option, exchange_function, args):
+def print_exchange_option(option, exchange_func, args):
     try:
         exchange_name = args[1]
         exchange = loader.get_exchange_by_name(exchange_name)
@@ -55,7 +55,8 @@ def print_exchange_option(option, exchange_function, args):
             raise ExchangeError(f'{exchange_name} exchange is not available')
 
         exchange_args = args[2::]
-        CLI_FUNCTIONS[option](exchange_function, exchange_args)
+        exchange_func = getattr(exchange, exchange_func)
+        CLI_FUNCTIONS[option](exchange_func, exchange_args)
 
         cli_exit()
 
@@ -83,11 +84,45 @@ def print_exchanges():
 
 
 @cli_function('info')
-def process_info(exchange_function, exchange_args):
-    coin = exchange_args[1]
+def process_info(exchange_func, exchange_args):
+    coin = exchange_args[0]
 
-    coin_info = exchange_function(coin)
+    coin_info = exchange_func(coin)
     print_exchange_values(coin_info)
+
+
+@cli_function('order_history')
+def process_order_history(exchange_func, exchange_args):
+    coins = [exchange_args[0], exchange_args[1]]
+
+    history = exchange_func(coins)
+    print_exchange_values(history)
+
+
+@cli_function('trade_history')
+def process_trade_history(exchange_func, exchange_args):
+    coins = [exchange_args[0], exchange_args[1]]
+    start_date = exchange_args[2]
+
+    history = exchange_func(coins, start_date)
+    print_exchange_values(history)
+
+
+@cli_function('chart')
+def process_chart(exchange_func, exchange_args):
+    coins = [exchange_args[0], exchange_args[1]]
+    start_date = exchange_args[2]
+
+    chart = exchange_func(coins, start_date)
+    print_exchange_values(chart)
+
+
+@cli_function('balance')
+def process_balance(exchange_func, exchange_args):
+    coin = exchange_args[0]
+
+    balance = exchange_func(coin)
+    print_exchange_values(balance)
 
 
 # #################################################
