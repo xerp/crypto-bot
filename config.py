@@ -1,0 +1,6 @@
+EXCHANGES = {
+    'poloniex': {
+        'key': '',
+        'secret': ''
+    }
+}

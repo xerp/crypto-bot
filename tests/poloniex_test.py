@@ -6,6 +6,7 @@ api_keys = {
     'secret': ''
 }
 
+
 class PoloniexTestCast(unittest.TestCase):
     def setUp(self):
         self.poloniex = loader.get_exchange_by_name('poloniex')
@@ -51,6 +52,31 @@ class PoloniexTestCast(unittest.TestCase):
         chart_info = self.poloniex.get_chart_info(coins, start_date)
 
         self.assertTrue(chart_info, 'chart info failing')
+
+    def test_buy(self):
+        coins = ['btc', 'eth']
+        quantity = 1
+        price = 0
+
+        result = self.poloniex.buy(coins, quantity, price)
+
+        self.assertTrue(result['success'], 'buying coins failing')
+
+    def test_sell(self):
+        coins = ['btc', 'eth']
+        quantity = 1
+        price = 0
+
+        result = self.poloniex.sell(coins, quantity, price)
+
+        self.assertTrue(result['success'], 'selling coins failing')
+
+    def test_cancel_order(self):
+        order_number = 1
+
+        result = self.poloniex.cancel_order(order_number)
+
+        self.assertTrue(result['success'], 'cancel order failing')
 
 
 if __name__ == '__main__':

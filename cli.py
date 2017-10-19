@@ -1,6 +1,7 @@
 import sys
 from exchange import EXCHANGE_COMMANDS, ExchangeError
 from exchanges import loader
+import config
 
 CLI_FUNCTIONS = {}
 
@@ -49,10 +50,12 @@ def print_exchange_values(**kwargs):
 
 def print_exchange_option(option, exchange_func, args):
     try:
-        exchange_name = args[1]
+        exchange_name = args[1].lower()
         exchange = loader.get_exchange_by_name(exchange_name)
         if not exchange:
             raise ExchangeError(f'{exchange_name} exchange is not available')
+
+        exchange.connect_to_api(config.EXCHANGES[exchange_name])
 
         exchange_args = args[2::]
         exchange_func = getattr(exchange, exchange_func)
@@ -123,6 +126,42 @@ def process_balance(exchange_func, exchange_args):
 
     balance = exchange_func(coin)
     print_exchange_values(balance)
+
+
+@cli_function('open_orders')
+def process_open_orders(exchange_func, exchange_args):
+    coins = [exchange_args[0], exchange_args[1]]
+
+    open_orders = exchange_func(coins)
+    print_exchange_values(open_orders)
+
+
+@cli_function('buy')
+def process_buy(exchange_func, exchange_args):
+    coins = [exchange_args[0], exchange_args[1]]
+    quantity = exchange_args[2]
+    price = exchange_args[3]
+
+    result = exchange_func(coins, quantity, price)
+    print_exchange_values(result)
+
+
+@cli_function('sell')
+def process_sell(exchange_func, exchange_args):
+    coins = [exchange_args[0], exchange_args[1]]
+    quantity = exchange_args[2]
+    price = exchange_args[3]
+
+    result = exchange_func(coins, quantity, price)
+    print_exchange_values(result)
+
+
+@cli_function('cancel_order')
+def process_cancel_order(exchange_func, exchange_args):
+    order_number = exchange_args[0]
+
+    result = exchange_func(order_number)
+    print_exchange_values(result)
 
 
 # #################################################
