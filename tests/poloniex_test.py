@@ -54,23 +54,27 @@ class PoloniexTestCast(unittest.TestCase):
         self.assertTrue(chart_info, 'chart info failing')
 
     def test_buy(self):
-        coins = ['btc', 'eth']
+        coins = ['btc', 'sc']
         quantity = 1
         price = 0
 
         result = self.poloniex.buy(coins, quantity, price)
+        print('buy', result)
 
         self.assertTrue(result['success'], 'buying coins failing')
 
+    @unittest.skip("testing skipping")
     def test_sell(self):
-        coins = ['btc', 'eth']
+        coins = ['btc', 'sc']
         quantity = 1
         price = 0
 
         result = self.poloniex.sell(coins, quantity, price)
+        print('sell', result)
 
         self.assertTrue(result['success'], 'selling coins failing')
 
+    @unittest.skip("testing skipping")
     def test_cancel_order(self):
         order_number = 1
 
