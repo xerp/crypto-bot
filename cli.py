@@ -1,6 +1,6 @@
 import sys
-from exchange import EXCHANGE_COMMANDS, ExchangeError
-from exchanges import loader
+from exchange import EXCHANGE_COMMANDS, ExchangeError, ExchangeNotFoundError
+from exchanges import loader as exchange_loader
 import config
 
 CLI_FUNCTIONS = {}
@@ -50,24 +50,24 @@ def print_exchange_values(**kwargs):
 
 def print_exchange_option(option, exchange_func, args):
     try:
-        exchange_name = args[1].lower()
-        exchange = loader.get_exchange_by_name(exchange_name)
+        exchange_name = args[0].lower()
+        exchange = exchange_loader.get_exchange_by_name(exchange_name)
         if not exchange:
-            raise ExchangeError(f'{exchange_name} exchange is not available')
+            raise ExchangeNotFoundError(f'{exchange_name} exchange is not available')
 
         exchange.connect_to_api(config.EXCHANGES[exchange_name])
 
-        exchange_args = args[2::]
+        exchange_args = args[1::]
         exchange_func = getattr(exchange, exchange_func)
         CLI_FUNCTIONS[option](exchange_func, exchange_args)
 
         cli_exit()
 
     except (IndexError, ExchangeError) as error:
-        if error == ExchangeError:
+        if isinstance(error, ExchangeError):
             cli_exit(error)
-        else:
-            cli_exit('Missing arguments for this option')
+
+        cli_exit('Missing arguments for this option')
 
 
 # #################################################
@@ -80,7 +80,7 @@ def print_exchange_option(option, exchange_func, args):
 
 def print_exchanges():
     try:
-        exchanges = map(lambda e: e.name, loader.get_available_exchanges())
+        exchanges = map(lambda e: e.name, exchange_loader.get_available_exchanges())
         print(','.join(exchanges))
     except IndexError:
         cli_exit('exchanges command value must be a tuple structured as [function,lambda expression, list]')
@@ -171,9 +171,10 @@ def process_cancel_order(exchange_func, exchange_args):
 if __name__ == '__main__':
 
     cli_option = get_cli_option(sys.argv)
-    exchange_function = get_exchange_function(cli_option)
+    args = sys.argv[2::]
 
     if cli_option == 'exchanges':
         print_exchanges()
     else:
-        print_exchange_option(cli_option, exchange_function, sys.argv)
+        exchange_function = get_exchange_function(cli_option)
+        print_exchange_option(cli_option, exchange_function, args)
