@@ -6,10 +6,11 @@ from hmac import new as hmac_new
 from hashlib import sha512
 import time
 from datetime import datetime
+import threading
 
 
 def poloniex_http_post(url, data, api_keys):
-    data['nonce'] = int(time.time() * 1000)
+    data['nonce'] = int((time.time() * 1000) + (threading.get_ident() * 1000))
     sign = hmac_new(api_keys['secret'].encode('utf-8'),
                     urlencode(data).encode('utf-8'),
                     sha512).hexdigest()
